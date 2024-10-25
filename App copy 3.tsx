@@ -41,6 +41,7 @@ export default function App() {
     disconnectFromDevice,
   } = useBLE();
 
+  const [showSplash, setShowSplash] = useState<boolean>(true);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [caliperValueInput, setcaliperValueInput] = useState("");
   const [bleValue, setBleValue] = useState("");
@@ -54,7 +55,7 @@ export default function App() {
   console.log("bleValue :" , bleValue);
 
   useEffect(()=>{
-    setBleValue(String(caliperValue.value));
+    setBleValue(String(caliperValue));
     setcaliperValueInput(bleValue);
   },[caliperValue , bleValue]);
 
@@ -160,8 +161,7 @@ export default function App() {
   
       Alert.alert(
         "Export Successful", 
-        `File saved as ${filename} in your Downloads folder.`,
-        
+        `File saved as ${filename} in your Downloads folder.`
       );
   
     } catch (error) {
@@ -195,12 +195,13 @@ export default function App() {
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const currentData = measuredValues.slice(startIndex, startIndex + PAGE_SIZE);
 
-  return  (
-    <SafeAreaView style={styles.container}>
+
+  const renderMainContent = ()=> (
+<SafeAreaView style={styles.container}>
       {/* Top section with logo */}
       <View style={styles.topBar}>
         {/* Logo */}
-        <Image source={require('./assets/tesa_logo.png')} style={styles.logo} />
+        <Image source={require('./assets/logo.png')} style={styles.logo} />
       </View>
 
        {/* Part Number Input */}
@@ -299,6 +300,14 @@ export default function App() {
         devices={allDevices}
       />
     </SafeAreaView>
+
+  );
+
+
+  return showSplash ? (
+    <SplashScreen onComplete={() => setShowSplash(false)} />
+  ) : (
+    renderMainContent()
   );
 }
 
